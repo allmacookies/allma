@@ -66,11 +66,11 @@ p { margin: 0; }
 .btn-ghost { background: transparent; color: var(--pink-btn); }
 .btn-ghost:hover { background: var(--blush); border-color: var(--pink-btn); }
 .btn-small { min-height: 40px; padding: 0 16px; font-size: .9rem; }
-.btn-wide { width: 100%; }
+.btn-wide { width: 100%; text-align: center; line-height: 1.2; padding-block: 12px; }
 .btn-wa { background: var(--wa); border-color: var(--wa); color: #FFFFFF; }
 .btn-wa:hover { background: #0E7A40; border-color: #0E7A40; }
 .btn.is-off { opacity: .45; cursor: not-allowed; }
-.btn:focus-visible, .st-btn:focus-visible, .nav a:focus-visible, .chip input:focus-visible + span, input[type="text"]:focus-visible, input[type="date"]:focus-visible, textarea:focus-visible, summary:focus-visible, .fmt:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.btn:focus-visible, .st-btn:focus-visible, .nav a:focus-visible, .chip input:focus-visible + span, input[type="text"]:focus-visible, input[type="date"]:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible, .fmt:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
 /* Announcement + header */
 .announce { background: var(--pink-btn); color: var(--on-pink); font-size: .8rem; font-weight: 500; text-align: center; padding-block: 8px; }
@@ -236,6 +236,31 @@ p { margin: 0; }
 .tip p { color: var(--muted); font-size: .88rem; }
 .tip-no h3 { color: var(--pink-btn); }
 
+/* Delivery */
+.dl-opts { display: grid; gap: 12px; }
+@media (min-width: 760px) { .dl-opts { grid-template-columns: 1fr 1fr; gap: 18px; } }
+.dl-opt { background: var(--cream); border-radius: var(--r); padding: 18px; display: grid; gap: 8px; min-width: 0; }
+.dl-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.dl-opt h3 { font: 400 1.35rem/1.05 var(--font-display); }
+.dl-opt p { color: var(--muted); font-size: .92rem; }
+.dl-opt strong { color: var(--ink); }
+.dl-pill { background: var(--pink-btn); color: var(--on-pink); border-radius: 999px; padding: 6px 12px; font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.dl-pill-soft { background: var(--page); color: var(--pink-btn); border: 1.5px solid var(--pink-btn); }
+.dl-opt-main { background: var(--pink-btn); color: var(--on-pink); align-content: start; }
+.dl-opt-main p { color: var(--on-pink); }
+.dl-opt-main .dl-pill { background: var(--on-pink); color: var(--pink-btn); }
+.zones { display: grid; margin-top: 4px; }
+.zone { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-block: 10px; border-top: 1px solid var(--cream-2); min-width: 0; }
+.zone-km { font-size: .74rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--orange-text); white-space: nowrap; }
+.zone-rule { text-align: right; display: grid; gap: 2px; }
+.zone-rule strong { font-size: .92rem; color: var(--ink); font-weight: 600; }
+.zone-rule small { font-size: .8rem; color: var(--muted); }
+.zones-note { margin-top: 12px; text-align: center; color: var(--muted); font-size: .86rem; }
+fieldset.mode { border: 0; padding: 0; margin: 0; min-width: 0; }
+fieldset.mode legend { font-weight: 600; font-size: .92rem; padding: 0; margin-bottom: 6px; }
+.bd-dl { color: var(--ink); font-weight: 500; }
+select#fLoc { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--pink-btn) 50%), linear-gradient(135deg, var(--pink-btn) 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+
 /* Order */
 .order-grid { display: grid; gap: 16px; }
 @media (min-width: 860px) { .order-grid { grid-template-columns: 1fr 1fr; align-items: start; gap: 24px; } }
@@ -258,7 +283,7 @@ p { margin: 0; }
 .field label { font-weight: 600; font-size: .92rem; }
 .opt { font-weight: 400; color: var(--muted); }
 .field small { color: var(--muted); font-size: .8rem; }
-input[type="text"], input[type="date"], textarea { width: 100%; font: 400 1rem/1.4 var(--font-body); color: var(--ink); background: var(--page); border: 1.5px solid var(--cream-2); border-radius: 14px; padding: 11px 12px; }
+input[type="text"], input[type="date"], select, textarea { width: 100%; font: 400 1rem/1.4 var(--font-body); color: var(--ink); background: var(--page); border: 1.5px solid var(--cream-2); border-radius: 14px; padding: 11px 12px; }
 textarea { resize: vertical; }
 .send { display: grid; gap: 10px; margin-top: 4px; }
 .hint { color: var(--muted); font-size: .82rem; }
@@ -300,7 +325,7 @@ body.order-visible .cartbar { transform: translateY(110%); }
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
 </head>
 <body>
-<div class="announce"><div class="wrap">Encomendas com 24 a 48 h de antecedência · a partir de 3 cookies</div></div>
+<div class="announce"><div class="wrap">Encomendas com 24 a 48 h de antecedência · levantamento sempre grátis em Ovar</div></div>
 
 <header class="top">
   <div class="wrap top-in">
@@ -310,6 +335,7 @@ body.order-visible .cartbar { transform: translateY(110%); }
       <a href="#sabores">Sabores</a>
       <a href="#packs">Packs</a>
       <a href="#minis">Mini cookies</a>
+      <a href="#entrega">Entrega</a>
       <a href="#razoes">Porquê nós</a>
     </nav>
   </div>
@@ -466,6 +492,27 @@ body.order-visible .cartbar { transform: translateY(110%); }
     </div>
   </section>
 
+  <section id="entrega" class="sec" aria-labelledby="t-entrega">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="sec-title" id="t-entrega">Entrega e <span class="p">levantamento</span></h2>
+        <p class="sec-sub">Escolhe o que te der mais jeito: vens buscar ou levamos até ti.</p>
+      </div>
+      <div class="dl-opts">
+        <div class="dl-opt dl-opt-main">
+          <div class="dl-top"><h3>Levantamento</h3><span class="dl-pill">Sempre grátis</span></div>
+          <p>Vem buscar a tua encomenda a Ovar, sem qualquer custo. Combinamos contigo o local e a hora.</p>
+        </div>
+        <div class="dl-opt">
+          <div class="dl-top"><h3>Entrega em mão</h3><span class="dl-pill dl-pill-soft">Grátis até 5 km</span></div>
+          <p>Levamos a encomenda até ti. Mais longe, a entrega é grátis a partir de um valor mínimo.</p>
+          <div class="zones" id="zonesList"></div>
+        </div>
+      </div>
+      <p class="zones-note">Distâncias a partir de Ovar. Na encomenda escolhes a tua localidade e a conta é feita automaticamente.</p>
+    </div>
+  </section>
+
   <section id="encomenda" class="sec">
     <div class="wrap">
       <div class="sec-head">
@@ -496,9 +543,21 @@ body.order-visible .cartbar { transform: translateY(110%); }
             <input id="fDate" name="date" type="date">
             <small>Pedimos 24 a 48 h de antecedência. Confirmamos a data contigo.</small>
           </div>
+          <fieldset class="field mode">
+            <legend>Como queres receber?</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="mode" id="fModeLev" value="levantamento"><span>Levantamento</span></label>
+              <label class="chip"><input type="radio" name="mode" id="fModeEnt" value="entrega"><span>Entrega em mão</span></label>
+            </div>
+          </fieldset>
+          <div class="field" id="locField" hidden>
+            <label for="fLoc">Localidade da entrega</label>
+            <select id="fLoc" name="loc"></select>
+            <small id="dlHint"></small>
+          </div>
           <div class="field">
             <label for="fNotes">Notas <span class="opt">(opcional)</span></label>
-            <textarea id="fNotes" name="notes" rows="3" placeholder="Alergias, recolha ou entrega, mensagem para um presente…"></textarea>
+            <textarea id="fNotes" name="notes" rows="3" placeholder="Alergias, mensagem para um presente…"></textarea>
           </div>
           <div class="send">
             <a id="sendWa" class="btn btn-wide btn-wa" target="_blank" rel="noopener" hidden>Enviar pelo WhatsApp</a>
@@ -576,7 +635,7 @@ const fmt = v => eur.format(v);
 const $ = id => document.getElementById(id);
 
 const STORE_KEY = "allma-encomenda-v1";
-let state = { c: {}, m: {}, dough: "Mix", name: "", date: "", notes: "" };
+let state = { c: {}, m: {}, dough: "Mix", name: "", date: "", notes: "", mode: "levantamento", loc: "" };
 FLAVOURS.forEach(f => state.c[f.id] = 0);
 MINIS.forEach(m => state.m[m.n] = 0);
 try {
@@ -586,6 +645,8 @@ try {
     MINIS.forEach(m => state.m[m.n] = Math.max(0, parseInt((saved.m || {})[m.n]) || 0));
     if (DOUGHS.includes(saved.dough)) state.dough = saved.dough;
     state.name = saved.name || ""; state.notes = saved.notes || ""; state.date = saved.date || "";
+    if (saved.mode === "entrega") state.mode = "entrega";
+    if (typeof saved.loc === "string") state.loc = saved.loc;
   }
 } catch (e) {}
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
@@ -617,6 +678,28 @@ function priceMinis(m) {
   let total = 0, count = 0;
   MINIS.forEach(x => { total += (m[x.n] || 0) * x.price; count += (m[x.n] || 0) * x.n; });
   return { total, count };
+}
+
+/* ===== Entrega e levantamento =====
+   Distâncias a partir de Ovar. Para mudar valores ou localidades, edita só esta lista.
+   fee = taxa abaixo do mínimo; freeFrom = valor a partir do qual a entrega é grátis. */
+const PICKUP_PLACE = "Ovar";
+const ZONES = [
+  { label: "Até 5 km", fee: 0, freeFrom: 0, places: ["Ovar"] },
+  { label: "De 5 a 15 km", fee: 2.00, freeFrom: 19, places: ["Válega", "Maceda", "Cortegaça", "Avanca", "Esmoriz"] },
+  { label: "De 15 a 30 km", fee: 4.00, freeFrom: 28, places: ["Espinho", "Santa Maria da Feira", "São João da Madeira", "Oliveira de Azeméis"] }
+];
+const ZONE_OF = {};
+ZONES.forEach(z => z.places.forEach(p => ZONE_OF[p] = z));
+function deliveryInfo(sub) {
+  if (state.mode !== "entrega") return { fee: 0, line: `Levantamento em ${PICKUP_PLACE}`, value: "Grátis", msg: `Levantamento em ${PICKUP_PLACE} (local e hora a combinar)` };
+  if (!state.loc) return { fee: 0, line: "Entrega", value: "escolhe a localidade", msg: "Entrega: localidade por escolher" };
+  if (state.loc === "Outra") return { fee: 0, line: "Entrega noutra localidade", value: "a combinar", msg: "Entrega noutra localidade (custo a combinar)" };
+  const z = ZONE_OF[state.loc];
+  const free = z.fee > 0 && sub >= z.freeFrom;
+  const fee = free ? 0 : z.fee;
+  return { fee, line: `Entrega em ${state.loc}`, value: fee ? fmt(fee) : "Grátis",
+           msg: `Entrega em ${state.loc}: ${fee ? fmt(fee) : "grátis"}`, zoneFee: z.fee, missing: z.fee > 0 && !free ? z.freeFrom - sub : 0 };
 }
 
 /* ===== Render do catálogo ===== */
@@ -668,6 +751,21 @@ $("flavours").innerHTML = FLAVOURS.map(f => `
 const OCCASIONS = { 3: "Para provar", 6: "Para partilhar", 9: "Para a família", 12: "Para festas" };
 $("allergenLegend").innerHTML = Object.keys(ALG_NAME).map(k => `<span class="alg-item"><span class="alg">${algIcon(k)}</span>${ALG_NAME[k]}</span>`).join("");
 $("minisAllergens").innerHTML = `${algBadges("minis")}<span>Contém glúten, ovo, leite e soja.</span>`;
+$("zonesList").innerHTML = ZONES.map(z => `
+  <div class="zone">
+    <span class="zone-km">${z.label}</span>
+    <span class="zone-rule">${z.fee ? `<strong>Grátis a partir de ${fmt(z.freeFrom)}</strong><small>Abaixo disso, ${fmt(z.fee)}</small>` : "<strong>Sempre grátis</strong>"}</span>
+  </div>`).join("") + `
+  <div class="zone">
+    <span class="zone-km">Mais de 30 km</span>
+    <span class="zone-rule"><strong>A combinar</strong><small>Fala connosco por mensagem</small></span>
+  </div>`;
+$("fLoc").innerHTML = '<option value="">Escolhe a localidade</option>' + ZONES.map(z =>
+  `<optgroup label="${z.label} · ${z.fee ? "grátis a partir de " + fmt(z.freeFrom) : "grátis"}">${z.places.map(p => `<option value="${p}">${p}</option>`).join("")}</optgroup>`).join("") +
+  '<option value="Outra">Outra localidade ou mais de 30 km (combinar)</option>';
+if (state.loc && state.loc !== "Outra" && !ZONE_OF[state.loc]) state.loc = "";
+document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", () => { state.mode = r.value; save(); render(); }));
+$("fLoc").addEventListener("change", () => { state.loc = $("fLoc").value; save(); render(); });
 $("packsGrid").innerHTML = PACKS.slice().reverse().map(p => `
   <div class="pack">
     <span class="pack-tag">${OCCASIONS[p.n]}</span>
@@ -722,7 +820,9 @@ function buildMessage(pc, pm) {
   Object.keys(packCounts).sort((a, b) => a - b).forEach(n => parts.push(`${packCounts[n]}× pack de ${n}`));
   if (pc.loose.length) parts.push(`${pc.loose.length} à unidade`);
   if (pc.premiumInPacks) parts.push(`${pc.premiumInPacks} premium (+${fmt(pc.premiumInPacks * PREMIUM_EXTRA)})`);
-  L.push(`Total estimado: ${fmt(pc.total + pm.total)}${parts.length ? " (" + parts.join(", ") + ")" : ""}`);
+  const dl = deliveryInfo(pc.total + pm.total);
+  L.push(dl.msg);
+  L.push(`Total estimado: ${fmt(pc.total + pm.total + dl.fee)}${parts.length ? " (" + parts.join(", ") + ")" : ""}`);
   if (state.name.trim()) L.push(`Nome: ${state.name.trim()}`);
   if (state.date) L.push(`Para: ${fmtDate(state.date)}`);
   if (state.notes.trim()) L.push(`Notas: ${state.notes.trim()}`);
@@ -738,9 +838,14 @@ function render() {
     st.classList.toggle("on", n > 0);
   });
   document.querySelectorAll('input[name="dough"]').forEach(r => r.checked = r.value === state.dough);
+  document.querySelectorAll('input[name="mode"]').forEach(r => r.checked = r.value === state.mode);
+  $("locField").hidden = state.mode !== "entrega";
+  $("fLoc").value = state.loc;
 
   const pc = priceCookies(state.c), pm = priceMinis(state.m);
-  const total = pc.total + pm.total;
+  const sub = pc.total + pm.total;
+  const dl = deliveryInfo(sub);
+  const total = sub + dl.fee;
   const has = pc.N > 0 || pm.count > 0;
   $("emptyState").hidden = has; $("summaryFull").hidden = !has;
 
@@ -760,11 +865,18 @@ function render() {
   const looseBy = {};
   pc.loose.forEach(u => looseBy[u.id] = (looseBy[u.id] || 0) + 1);
   FLAVOURS.forEach(f => { const k = looseBy[f.id]; if (k) bd.push(`<div><span>${k}× ${f.name} à unidade</span><span>${fmt(k * f.price)}</span></div>`); });
+  if (pc.N || pm.count) bd.push(`<div class="bd-dl"><span>${dl.line}</span><span>${dl.value}</span></div>`);
   $("breakdown").innerHTML = bd.length ? `<p class="bd-title">Como fica a conta</p>${bd.join("")}` : "";
+  $("dlHint").textContent = state.mode !== "entrega" ? "" :
+    state.loc === "Outra" ? "Combinamos o custo contigo por mensagem." :
+    dl.missing > 0 ? `Faltam ${fmt(dl.missing)} para a entrega ser grátis. O levantamento em Ovar é sempre grátis.` :
+    state.loc && dl.zoneFee > 0 && dl.fee === 0 ? "Com este valor, a entrega fica grátis." :
+    state.loc && dl.zoneFee === 0 ? "A entrega nesta localidade é grátis." : "";
   $("total").textContent = fmt(total);
 
   let warn = "";
   if (has && pc.N < 3 && pm.count < 25) warn = `Faltam ${3 - pc.N} cookie${3 - pc.N > 1 ? "s" : ""} para o mínimo de 3 (ou junta um pack de 25 mini cookies).`;
+  if (!warn && has && state.mode === "entrega" && !state.loc) warn = "Escolhe a localidade da entrega.";
   $("warn").textContent = warn; $("warn").hidden = !warn;
   const ok = has && !warn;
 
