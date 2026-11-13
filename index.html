@@ -324,6 +324,22 @@ input[type="tel"] { width: 100%; font: 400 1rem/1.4 var(--font-body); color: var
 .sent p { color: var(--muted); max-width: 36ch; }
 .sent-recap { width: 100%; text-align: left; white-space: pre-wrap; word-break: break-word; background: var(--page); border: 1px solid var(--cream-2); border-radius: 12px; padding: 12px; font: 400 .84rem/1.5 var(--font-body); margin: 0; }
 
+/* Código promocional */
+.promo { margin-top: 12px; display: grid; gap: 8px; }
+.promo-open { justify-self: start; background: none; border: 0; padding: 4px 0; color: var(--pink-btn); font: 600 .9rem/1.2 var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.promo-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.promo-form input { text-transform: uppercase; letter-spacing: .06em; }
+.promo-form .btn { min-height: 46px; }
+.promo-msg { font-size: .86rem; font-weight: 500; color: var(--pink-btn); min-height: 0; }
+.promo-msg:empty { display: none; }
+.promo-on { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--page); border: 1.5px dashed var(--pink-btn); border-radius: 14px; padding: 10px 12px; }
+.promo-tag { font-size: .9rem; font-weight: 600; color: var(--ink); }
+.promo-tag b { color: var(--pink-btn); letter-spacing: .04em; }
+.promo-tag small { display: block; margin-top: 2px; font-weight: 400; font-size: .8rem; color: var(--muted); }
+.promo-rm { background: none; border: 0; color: var(--muted); font: 500 .82rem/1 var(--font-body); text-decoration: underline; cursor: pointer; padding: 4px; }
+.bd-promo span:last-child { color: var(--pink-btn); font-weight: 600; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
 /* Instagram strip */
 .insta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 24px; }
 @media (min-width: 760px) { .insta { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -589,6 +605,19 @@ body.order-visible .cartbar { transform: translateY(110%); }
           <div id="summaryFull" hidden>
             <ul class="lines" id="lines" tabindex="-1" aria-label="Artigos do pedido"></ul>
             <div class="breakdown" id="breakdown"></div>
+            <div class="promo" id="promoBox">
+              <button type="button" class="promo-open" id="promoOpen" aria-expanded="false" aria-controls="promoForm">Tens um código?</button>
+              <div class="promo-form" id="promoForm" hidden>
+                <label for="fCode" class="sr-only">Código</label>
+                <input id="fCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escreve o código">
+                <button type="button" class="btn btn-small" id="promoApply">Aplicar</button>
+              </div>
+              <p class="promo-msg" id="promoMsg" role="status"></p>
+              <div class="promo-on" id="promoOn" hidden>
+                <span class="promo-tag" id="promoTag"></span>
+                <button type="button" class="promo-rm" id="promoRemove">Remover</button>
+              </div>
+            </div>
             <div class="total-row"><span>Total estimado</span><strong id="total">0,00 €</strong></div>
             <p class="warn" id="warn" hidden></p>
             <button type="button" class="clear-btn" id="clearOrder">Limpar pedido</button>
@@ -763,7 +792,7 @@ const fmt = v => eur.format(v);
 const $ = id => document.getElementById(id);
 
 const STORE_KEY = "allma-encomenda-v1";
-let state = { c: {}, m: {}, dough: "Mix", name: "", phone: "", ig: "", date: "", notes: "", mode: "levantamento", cp: "", place: "" };
+let state = { c: {}, m: {}, dough: "Mix", name: "", phone: "", ig: "", code: "", date: "", notes: "", mode: "levantamento", cp: "", place: "" };
 FLAVOURS.forEach(f => state.c[f.id] = 0);
 MINIS.forEach(m => state.m[m.n] = 0);
 try {
@@ -772,7 +801,7 @@ try {
     FLAVOURS.forEach(f => state.c[f.id] = Math.max(0, parseInt(saved.c[f.id]) || 0));
     MINIS.forEach(m => state.m[m.n] = Math.max(0, parseInt((saved.m || {})[m.n]) || 0));
     if (DOUGHS.includes(saved.dough)) state.dough = saved.dough;
-    state.name = saved.name || ""; state.phone = saved.phone || ""; state.ig = saved.ig || ""; state.notes = saved.notes || ""; state.date = saved.date || "";
+    state.name = saved.name || ""; state.phone = saved.phone || ""; state.code = typeof saved.code === "string" ? saved.code : ""; state.ig = saved.ig || ""; state.notes = saved.notes || ""; state.date = saved.date || "";
     if (saved.mode === "entrega") state.mode = "entrega";
     if (typeof saved.cp === "string") state.cp = saved.cp;
     if (typeof saved.place === "string") state.place = saved.place;
@@ -1001,7 +1030,8 @@ function buildMessage(pc, pm) {
   if (pc.premiumInPacks) parts.push(`${pc.premiumInPacks} premium (+${fmt(pc.premiumInPacks * PREMIUM_EXTRA)})`);
   const dl = deliveryInfo(pc.total + pm.total);
   L.push(dl.msg);
-  L.push(`Total estimado: ${fmt(pc.total + pm.total + dl.fee)}${parts.length ? " (" + parts.join(", ") + ")" : ""}`);
+  L.push(`Total estimado: ${fmt(Math.max(0, pc.total + pm.total - promoInfo(pc.total + pm.total).discount) + dl.fee)}${parts.length ? " (" + parts.join(", ") + ")" : ""}`);
+  { const pr = promoInfo(pc.total + pm.total); if (pr.ok) L.push(`Código: ${pr.code} (${pr.desc})`); }
   if (state.name.trim()) L.push(`Nome: ${state.name.trim()}`);
   if ((state.phone || "").trim()) L.push(`Telemóvel: ${phonePretty(state.phone)}`);
   if (igHandle(state.ig)) L.push(`Instagram: ${igHandle(state.ig)}`);
@@ -1031,7 +1061,8 @@ function render() {
   const pc = priceCookies(state.c), pm = priceMinis(state.m);
   const sub = pc.total + pm.total;
   const dl = deliveryInfo(sub);
-  const total = sub + dl.fee;
+  const pr = promoUI(sub);
+  const total = Math.max(0, sub - pr.discount) + dl.fee;
   const has = pc.N > 0 || pm.count > 0;
   $("emptyState").hidden = has; $("summaryFull").hidden = !has;
 
@@ -1052,6 +1083,7 @@ function render() {
   pc.loose.forEach(u => looseBy[u.id] = (looseBy[u.id] || 0) + 1);
   FLAVOURS.forEach(f => { const k = looseBy[f.id]; if (k) bd.push(`<div><span>${k}× ${f.name} à unidade</span><span>${fmt(k * f.price)}</span></div>`); });
   if (pc.N || pm.count) bd.push(`<div class="bd-dl"><span>${dl.line}</span><span>${dl.value}</span></div>`);
+  if (pr.ok && (pc.N || pm.count)) bd.push(pr.gift ? `<div class="bd-promo"><span>🎁 ${pr.c.label}</span><span>Grátis</span></div>` : `<div class="bd-promo"><span>Código ${pr.code}</span><span>−${fmt(pr.discount)}</span></div>`);
   $("breakdown").innerHTML = bd.length ? `<p class="bd-title">Como fica a conta</p>${bd.join("")}` : "";
   const hint = $("dlHint");
   hint.textContent = state.mode !== "entrega" ? "" :
@@ -1201,7 +1233,7 @@ async function sendOrder() {
   const msg = buildMessage(pc, pm);
   const fields = {
     [ORDER_FORM.nome]: state.name.trim(), [ORDER_FORM.tel]: phonePretty(state.phone), [ORDER_FORM.ig]: igHandle(state.ig),
-    [ORDER_FORM.data]: fmtDate(state.date), [ORDER_FORM.modo]: dl.msg, [ORDER_FORM.total]: fmt(sub + dl.fee), [ORDER_FORM.pedido]: msg
+    [ORDER_FORM.data]: fmtDate(state.date), [ORDER_FORM.modo]: dl.msg, [ORDER_FORM.total]: fmt(Math.max(0, sub - promoInfo(sub).discount) + dl.fee), [ORDER_FORM.pedido]: msg
   };
   const body = new URLSearchParams(); Object.entries(fields).forEach(([k, v]) => body.append(k, v));
   sending = true; btn.disabled = true; btn.textContent = "A enviar…"; $("status").textContent = "";
@@ -1213,7 +1245,7 @@ async function sendOrder() {
     $("sentText").textContent = `Obrigada, ${state.name.trim().split(/\s+/)[0]}! Recebemos o teu pedido para ${fmtDate(state.date)}. Vamos ligar-te ou mandar mensagem para o ${phonePretty(state.phone)} para confirmar tudo.`;
     $("sentRecap").textContent = msg;
     Object.keys(state.c).forEach(k => state.c[k] = 0); Object.keys(state.m).forEach(k => state.m[k] = 0);
-    state.notes = ""; $("fNotes").value = ""; state.date = ""; $("fDate").value = "";
+    state.code = ""; state.notes = ""; $("fNotes").value = ""; state.date = ""; $("fDate").value = "";
     save(); render();
     document.querySelector("#encomenda .summary").hidden = true;
     $("formBody").hidden = true; $("sentPanel").hidden = false; $("sentPanel").focus();
@@ -1237,6 +1269,65 @@ $("fPhone").addEventListener("input", () => { state.phone = $("fPhone").value; s
 $("fPhone").addEventListener("blur", () => { if (state.phone && !phoneOk(state.phone)) setErr("fPhone", "Este número não parece válido. Confirma os 9 algarismos."); });
 $("fIg").addEventListener("input", () => { state.ig = $("fIg").value; save(); render(); });
 ["fName", "fDate"].forEach(id => $(id).addEventListener("input", () => { if ($(id).getAttribute("aria-invalid") === "true") validateDetails(); }));
+
+/* ===== Códigos promocionais =====
+   Para criar um código novo, junta uma linha a CODES (o nome do código em MAIÚSCULAS, sem espaços nem acentos).
+   kind: "gift"    → oferta (não mexe no total), ex.: { kind: "gift", label: "5 mini cookies de oferta" }
+         "percent" → desconto em %, ex.: { kind: "percent", value: 10, label: "10% de desconto" }
+         "fixed"   → desconto em euros, ex.: { kind: "fixed", value: 2, label: "2 € de desconto" }
+   Opcional: min (valor mínimo das cookies, em €) e until (último dia válido, "AAAA-MM-DD"). */
+const CODES = {
+  "ALMAPARATODOS": { kind: "gift", label: "5 mini cookies de oferta", note: "Na primeira encomenda." },
+  "ANASILVA26": { kind: "fixed", value: 3.5, label: "1 cookie de oferta", note: "Parceria @allma.pt · no pack de 3.", min: 10, until: "2026-11-30" }
+  // "NATAL10": { kind: "percent", value: 10, label: "10% de desconto", until: "2026-12-24" },
+  // "MENOS2":  { kind: "fixed", value: 2, label: "2 € de desconto", min: 15 },
+};
+function normCode(v) { return String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+function codeState(code, sub) {
+  const c = CODES[code];
+  if (!c) return { valid: false };
+  if (c.until && localISO(new Date()) > c.until) return { valid: false, expired: true };
+  if (c.min && sub < c.min) return { valid: true, pending: true, need: c.min - sub, c };
+  return { valid: true, c };
+}
+function promoInfo(sub) {
+  const code = state.code || ""; if (!code) return { ok: false, discount: 0 };
+  const st = codeState(code, sub);
+  if (!st.valid || st.pending) return { ok: false, discount: 0, code, st };
+  const c = st.c;
+  const discount = c.kind === "percent" ? Math.round(sub * c.value) / 100 : c.kind === "fixed" ? Math.min(c.value, sub) : 0;
+  const desc = c.kind === "gift" ? c.label : `${c.label}: −${fmt(discount)}`;
+  return { ok: true, code, discount, desc, gift: c.kind === "gift", c, st };
+}
+function promoUI(sub) {
+  const pr = promoInfo(sub);
+  const on = !!state.code && (pr.ok || (pr.st && pr.st.pending));
+  $("promoOn").hidden = !on;
+  if (on) {
+    $("promoTag").innerHTML = `<b>${state.code}</b> · ${pr.st.c.label}${pr.st.c.note ? `<br><small>${pr.st.c.note}</small>` : ""}`;
+    $("promoForm").hidden = true; $("promoOpen").hidden = true;
+    $("promoMsg").textContent = pr.st.pending ? `Faltam ${fmt(pr.st.need)} em cookies para usar este código.` : "";
+  } else if ($("promoForm").hidden) { $("promoOpen").hidden = false; }
+  return pr;
+}
+function applyCode() {
+  const n = normCode($("fCode").value);
+  if (!n) { $("promoMsg").textContent = "Escreve o código."; $("fCode").focus(); return; }
+  const pc = priceCookies(state.c), pm = priceMinis(state.m);
+  const st = codeState(n, pc.total + pm.total);
+  if (!st.valid) { $("promoMsg").textContent = st.expired ? "Este código já expirou." : "Este código não é válido. Confirma se está bem escrito."; $("fCode").focus(); return; }
+  state.code = n; $("fCode").value = ""; $("promoMsg").textContent = ""; save(); render();
+  $("status").textContent = `Código ${n} aplicado.`;
+  $("promoRemove").focus();
+}
+$("promoOpen").addEventListener("click", () => {
+  $("promoOpen").hidden = true; $("promoForm").hidden = false; $("promoOpen").setAttribute("aria-expanded", "true"); $("fCode").focus();
+});
+$("promoApply").addEventListener("click", applyCode);
+$("fCode").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); applyCode(); } });
+$("promoRemove").addEventListener("click", () => {
+  state.code = ""; save(); $("promoMsg").textContent = ""; $("promoForm").hidden = false; render(); $("fCode").focus();
+});
 
 render();
 </script>
